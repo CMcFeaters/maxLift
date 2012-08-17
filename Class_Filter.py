@@ -1,58 +1,41 @@
 #this file will hold our filter class
 
+
 class Filter():
-	#this is a filter class, it will be used to store the data for our filter statement
-	#I want it to handle complex queries with multiple and/or levels
-	'''the filter will store an array of levels, each level will have a number, 
-	contain some conditionals, relate to all other levels with either an and or an or'''
-	#attributes
+	#filter used to create a search, will be a literal sql string
+	
 	def __init__(self):
-		self.highestLvl=0	#keeps track of the levels in the filter
-							#a level is an "and" or an "or" statement "z==5", 
-							#"X==7 and y==6" are 1 level, "x==7 and (z==5 or y==6)" is 2 levels
-		
-		self.lvls=[]		#an array containing all the levels
-		
-	#and the following abilities
-	def addLevel(self,level):
-		#a lvl can only and/or with levels with lower numbers
-		if self.lvls!=[]:self.highestLvl+=1
-		level.num=self.highestLvl				#assign a number to the level
-		
-		if level.andLvl!=[]:	#if there are things in the andLvl array we make sure they are only lower thna the current level num
-			for thing in level.andLvl:
-				if int(thing)>level.num: level.andLvl.remove(thing)
-		
-		if level.orLvl!=[]:
-			#if there are things in the orLvl array we make sure they are only lower thna the current level num
-			for thing in level.orLvl:
-				if int(thing)>level.num: level.orLvl.remove(thing)
-		
-		self.lvls.append(level)	#add the level to the list
+		self.numCond=0
+		self.condition={}	#each condition contains a conditional value and an intra and an inter relation
+		self.filter=""									#the statement will be the literal sql statement that gets queried
+		self.filterStr=""
 	
-	def createFilter(self):
-		#turns the current array of lvls into a single filter statement
-		pass
-	
+	def addCondition(self,newConditional,inter_rel):
+		#adds another level to the statement, there is at least 1 condition already in the statement
+		if self.condition!={}:
+			self.numCond+=1
+		self.condition[self.numCond]=[newConditional,inter_rel]
+		#MUST BE RE-WRITTEN
 		
-class Level():
-	#a level contains this info
-	#packet: an array of conditional statements,how they relate to eachother (and/or)
-	conditional=[]	#this array contains all the levels conditional statemetns
-	num=0				#this is the levels number, it can be whatever when it's created, it
-	
-	def __init__(self,conditional,relation,andLvl,orLvl):
-				
-		self.conditional.append(conditional)	#an array containing all conditional statements for this level
-		self.relation=relation					#how the conditionals relate (and/or)
-		self.andLvl=andLvl						#all levels this level logicaly "and" with
-		self.orLvl=orLvl						#all levels this level logically "or" with
+	def expandCondition(self,numCond,newCond,intra_rel):
+		#expands an existing conditional statement to include other statements, the conditional statement is and, or or'd with the newcondition
+		print 'FUCK'
+		self.condition[numCond][0]=intra_rel(self.condition[numCond][0],newCond)
 		
-	def addToLevel(self,condition,relation):
-		#append some conditions to the statement and update how the objects relate
-		self.conditional.append(condition)
-		self.relation=relation
+	def buildFilter(self):
+		#returns a filter made up of the members of the filter instance
+		for key in self.condition.keys():
+			if self.condition[key][1]!="": #if it has a relationship
+				self.filter=self.condition[key][1](self.filter,self.condition[key][0])
+			else:
+				self.filter=self.condition[key][0]
+		return self.filter
 		
-if __name__=="__main__":
-	Level0=Level("x==1","none","","")
-	Level0.addToLevel("y==7","and")
+'''if  __name__=="__main__":
+	temp=Filter("Type==Squat","")
+	print "created!"
+	temp.expandCondition(0,"Type==Clean","or")
+	print "expanded"
+	temp.addCondition("Reps==1","","and")
+	print "added!"
+	print temp'''

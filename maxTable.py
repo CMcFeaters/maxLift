@@ -1,11 +1,15 @@
 '''a simple database project using sqlAlchemy.  Goal is to have a orm based table to put in workout info
 info: date, type, max weight, max reps'''
 
-from sqlalchemy import create_engine, Column, Integer, String, Date
-from sqlalchemy.ext.declarative import declarative_base
+#FIX THE FILTER CLASS TO WORKWITH THE NEW DATA MODEL
+
+from sqlalchemy import create_engine, Column, Integer, String, Date, and_, or_
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 from Class_Filter import Filter
 import sys, string, inspect
+from operator import ne,eq,lt,le,ge,gt
+from sqlalchemy.sql import ClauseElement
 
 current_module=sys.modules[__name__] #this is our current module, we're going to use this to print what the fuck we can do here
 
@@ -13,9 +17,7 @@ engine  = create_engine('sqlite:////Users/Charles/Magic/Projects/1rm/lift.db',ec
 Base=declarative_base()	#this is our declarative base, it maintains a catalog of classes and tables relative to it
 Session = sessionmaker(bind=engine)	#declare our session, the session is bound to engine and is the ORM's handle to the database
 
-newFilt= Filter() #an instance of the Filter object, it will be in each iteration of the program
-
-
+filter=Filter()
 
 class Lift(Base):
 	#lift is added to the Base catalog
@@ -29,6 +31,7 @@ class Lift(Base):
 	year=Column(Integer)
 	maxReps = Column(Integer)
 	maxWeight = Column(Integer)
+	memberDict={0:("id",id),1:("type",type),2:("date",date),3:("month",month),4:("day",day),5:("year",year),6:("maxReps",maxReps),7:("maxWeight",maxWeight)}# a dictionary of all the members
 	
 	def __init__ (self,type,month,day,year,maxReps,maxWeight):	#init case
 		self.type = type
@@ -54,7 +57,7 @@ Base.metadata.create_all(engine) #this creates our table
 #session.commit - commits all the outstanding changes to the db
 
 def addRec():
-#adds an individual record to our table, does not commit it
+#adds an individual record to our table, then commits it
 	nType=raw_input("What type of lift?")
 	nMonth=int(raw_input("Month? (MM)"))
 	nDay=int(raw_input("Day? (DD)"))
@@ -64,16 +67,9 @@ def addRec():
 	session.add(Lift(nType,nMonth,nDay,nYear,nmaxReps,nmaxWeight)) #this is still an outstanding change 
 	session.commit()
 	
-def showTable():
-	#this function will print all the entries in the table
-	ord=raw_input("Ordered (y/n)")
-	if ord=='y' :
-		the_order=getOrder()
-		for thing in session.query(Lift).order_by(the_order):
-			print thing
-	else:
-		for thing in session.query(Lift):
-			print thing
+def queryTable():
+	for thing in session.query(Lift).filter(filter.buildFilter()):
+		print thing
 
 		
 def getOrder():
@@ -86,11 +82,61 @@ def getOrder():
 	choice=int(raw_input("What order?"))
 	return arr[choice]
 
+def addParam(cond):
+	#adds a new parameter to our filter
+	andor={0:and_,1:or_}
+	print "0) AND\n1) OR"
+	filter.addCondition(cond,andor[int(raw_input("->"))])
+	
+def expandParam(cond):
+	#allows the user to choose a condition to expand
+	for key in filter.condition.keys():
+		print "%s) %s"%(key,filter.condition[key][0])
+	choice=int(raw_input("->"))
+	andor={0:and_,1:or_}	#what type of expansion
+	print "0) AND\n1) OR"
+	filter.expandCondition(choice,cond,andor[int(raw_input("->"))])
+	
+def createFilter():
+	#this function displays all the parameters that can be added to filters
+	#uses 2 dicts and 1 user entry to setup the filter parameters
+	#returns the filter statement op(cat,val)
+	
+	opDict={0:("!=",ne),1:("==",eq),2:("<",lt),3:("<=",le),4:(">=",ge),5:(">",gt)} #the operator dict (0) is the printable symbol (1) is the object
+	
+	#cat: the category we filter by
+	
+	#print out cat options 
+	for key in Lift.memberDict.keys():		
+		print "%s) %s"%(key,Lift.memberDict[key][0])
+	#user input for the category, selects the key for memberdict from the items in memTemp
+	(_cat,cat)=Lift.memberDict[int(raw_input("Choose filter category"))]
+	
+	#op: The operator we use in our filtering eg: ==, >
+	for key in opDict.keys():		
+		print "%s) %s"%(key,opDict[key][0])
+	#user input for the category, selects the key for opDict from the items in opTemp
+	(_op,op)=opDict[int(raw_input("Choose filter category"))]
+	
+	#val: teh value we are evaluating towards
+	val=raw_input("%s %s "%(_cat,_op))										
+	
+	#add a method to evaluate if the new filter is legal
+	return op(cat,val)	#return the filter as a triple in the format of cat,op,val	
+
 def addFilterP():
 	#this function displays all the parameters that can be added to filters
 	#returns a string "rule" 
-	newFilter=createFilter()	#new filter is entered by user, if existing filters, determine if it's an "and" or an "or" filter
-	
+	newCond=createFilter()	#new filter is entered by user, if existing filters, determine if it's an "and" or an "or" filter
+	if filter.condition=={}:			#if this is the first thignin our filter, we jsut add the case and call it a day
+		filter.addCondition(newCond,"")
+	else:								#if it's not, find out how it relates to the other cases
+		#determine if it expands an existing option or creates a new one
+		choice={0:expandParam,1:addParam}
+		print "0) Expand Existing Parameter \n1) Add New Parameter"
+		choice[int(raw_input("->"))](newCond)
+		
+
 def rmvFilterP():
 	#function to remove a filter parameter
 	pass
@@ -103,22 +149,6 @@ def rmvOrderP():
 	#function to remove a specific orderby paramater
 	pass
 	
-def createFilter():
-	#this function displays all the parameters that can be added to filters
-	#returns a string representing a filter statement 
-	
-	arr=[item for item in dir(Lift) if not item.startswith("_") ]	#build a quick array and print out all 
-	
-	#allow user to input the data for the filter
-	cat=arr[int(raw_input("Choose filter category"))]	#cat: the category we filter by
-	op=raw_input("Operator: ")							#op: The operator we use in our filtering eg: ==, >
-	val=raw_input("%s %s "%(cat,op))					#val: teh value we are evaluating towards
-	
-	#add a method to evaluate if the new filter is legal
-	return (cat,op,val)	#return the filter as a triple in the format of cat,op,val
-	
-	
-		
 def searchEdit():
 	#search function generator, returns a tuple, containing the filter and orderby parameters
 	options={0:("Add a filter Parameter",addFilterP),1:("Add order parameter",addOrderP),2:("Remove Filter Parameter",rmvFilterP),\
@@ -132,20 +162,21 @@ def searchEdit():
 		if choice==4:
 			break
 		else: options[choice][1]()
-	
 
 if __name__ == "__main__":
 	#this is going to be the main loop, 2 layer menu, add or search
 	#add portion add records
 	#search portion, display current search parameters, allow addition of and/or parameters and order parameters
 	
-	options={0:("Add a Record",addRec),1:("Edit Search Parameters",searchEdit),2:("Execute the Search",showTable),3:("Exit Program",exit)}
-	
+	options={0:("Add a Record",addRec),1:("Edit Search Parameters",searchEdit),2:("Execute the Search",queryTable),3:("Exit Program",exit)}
+	#filter.addCondition("date==7","","")
+	#filter.expandCondition(0,"id==5","or")
+	filter.addCondition(eq(Lift.type,"Clean"),"")
+	filter.expandCondition(0,gt(Lift.maxWeight,300),and_)
 	while 1:
+		#print "Current Filter: %s"%filter
 		for num in options.iterkeys():
 			print "%s: %s"%(num,str(options[num][0]))
 		options[int(raw_input("->"))][1]()
-		
-		
-
-
+	''' thing in session.query(Lift).filter(and_(Lift.type=="Squat",Lift.maxReps==1)):
+		print thing'''
