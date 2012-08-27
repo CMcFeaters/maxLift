@@ -1,25 +1,30 @@
 '''a simple database project using sqlAlchemy.  Goal is to have a orm based table to put in workout info
 info: date, type, max weight, max reps'''
 
-#FIX THE FILTER CLASS TO WORKWITH THE NEW DATA MODEL
-
 from sqlalchemy import create_engine, Column, Integer, String, Date, and_, or_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from Class_Filter import Filter
-import sys, string, inspect
+import sys, string
 from operator import ne,eq,lt,le,ge,gt
-from sqlalchemy.sql import ClauseElement
 
 current_module=sys.modules[__name__] #this is our current module, we're going to use this to print what the fuck we can do here
 
-engine  = create_engine('sqlite:////Users/Charles/Magic/Projects/1rm/lift.db',echo=True)	#'''create the engine here, we will use sqlite and keep it in file'''
+#this section chooses the path the database is stored on
+try:#desktop path
+	path="/Users/Charles/Projects/maxLift/lift.db"
+	if open(path): pass
+except IOError as e:#laptoppath
+	print "not Found"
+	path="/Users/Charles/Magic/Projects/1rm/lift.db"
+	
+engine  = create_engine('sqlite:///'+path,echo=True)	#'''create the engine here, we will use sqlite and keep it in file'''
 Base=declarative_base()	#this is our declarative base, it maintains a catalog of classes and tables relative to it
 Session = sessionmaker(bind=engine)	#declare our session, the session is bound to engine and is the ORM's handle to the database
 
 filter=Filter()
 
-class Lift(Base):
+class Lift(Base): #this is the class our database is based around
 	#lift is added to the Base catalog
 	__tablename__='lift'	#give it a name
 	#members of the Lift class
@@ -57,17 +62,25 @@ Base.metadata.create_all(engine) #this creates our table
 #session.commit - commits all the outstanding changes to the db
 
 def addRec():
-#adds an individual record to our table, then commits it
-	nType=raw_input("What type of lift?")
-	nMonth=int(raw_input("Month? (MM)"))
-	nDay=int(raw_input("Day? (DD)"))
-	nYear=int(raw_input("Year? (YYYY)"))
+	#adds an individual record to our table, then commits it
+	nType=raw_input("What type of lift?").lower()
+	nMonth=digitValidate("Month? (MM)",2)
+	nDay=digitValidate("Day? (DD)",2)
+	nYear=digitValidate("Year? (YYYY)",4)
 	nmaxReps=int(raw_input("Number of reps?"))
 	nmaxWeight=int(raw_input("How many lbs?"))
 	session.add(Lift(nType,nMonth,nDay,nYear,nmaxReps,nmaxWeight)) #this is still an outstanding change 
 	session.commit()
-	
+
+def digitValidate(qStr,numDig):
+	#gets raw input from qStr, repeats until value has number of digits equal to numDigit and it's an integer
+	ans=""
+	while len(ans)!=numDig or not ans.isdigit():
+		ans=raw_input(qStr)
+	return int(ans)
+
 def queryTable():
+	#queries the database with whatever is currently in the filter
 	for thing in session.query(Lift).filter(filter.buildFilter()):
 		print thing
 
@@ -119,7 +132,7 @@ def createFilter():
 	(_op,op)=opDict[int(raw_input("Choose filter category"))]
 	
 	#val: teh value we are evaluating towards
-	val=raw_input("%s %s "%(_cat,_op))										
+	val=raw_input("%s %s "%(_cat,_op)).lower()										
 	
 	#add a method to evaluate if the new filter is legal
 	return op(cat,val)	#return the filter as a triple in the format of cat,op,val	
@@ -171,8 +184,9 @@ if __name__ == "__main__":
 	options={0:("Add a Record",addRec),1:("Edit Search Parameters",searchEdit),2:("Execute the Search",queryTable),3:("Exit Program",exit)}
 	#filter.addCondition("date==7","","")
 	#filter.expandCondition(0,"id==5","or")
-	filter.addCondition(eq(Lift.type,"Clean"),"")
-	filter.expandCondition(0,gt(Lift.maxWeight,300),and_)
+	#filter.addCondition(eq(Lift.type,"Clean"),"")
+	#filter.expandCondition(0,gt(Lift.maxWeight,300),and_)
+	
 	while 1:
 		#print "Current Filter: %s"%filter
 		for num in options.iterkeys():

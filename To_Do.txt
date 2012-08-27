@@ -1,0 +1,5 @@
+8/19/12
+X_make all entries stored in lower case
+X_add some data verification 
+X_support multiple paths onboth machines
+_delete a search parameter
