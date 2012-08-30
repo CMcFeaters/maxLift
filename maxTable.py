@@ -72,6 +72,14 @@ def addRec():
 	session.add(Lift(nType,nMonth,nDay,nYear,nmaxReps,nmaxWeight)) #this is still an outstanding change 
 	session.commit()
 
+def optionValidate(qStr,rng):
+	#gets a raw input, verifies it is a digit within the given range
+	ans=""
+	while rng.count(ans)==0:
+		ans=int(raw_input(qStr))
+	return ans
+		
+	
 def digitValidate(qStr,numDig):
 	#gets raw input from qStr, repeats until value has number of digits equal to numDigit and it's an integer
 	ans=""
@@ -152,7 +160,17 @@ def addFilterP():
 
 def rmvFilterP():
 	#function to remove a filter parameter
-	pass
+	#display parameters that can be removed
+	#change conditions based on removing 1 from beginning, middle or end
+	
+	#choose parameter to remove
+	print "Pick parameter to remove"
+	for key in filter.condition.keys():
+		print "%s) %s"%(key,filter.condition[key][0])
+	choice=optionValidate("->",range(len(filter.condition.keys())-1))
+	
+	filter.hideCondition(choice)
+	
 	
 def addOrderP():
 	#function to add an orderby parameter
@@ -182,15 +200,15 @@ if __name__ == "__main__":
 	#search portion, display current search parameters, allow addition of and/or parameters and order parameters
 	
 	options={0:("Add a Record",addRec),1:("Edit Search Parameters",searchEdit),2:("Execute the Search",queryTable),3:("Exit Program",exit)}
-	#filter.addCondition("date==7","","")
-	#filter.expandCondition(0,"id==5","or")
-	#filter.addCondition(eq(Lift.type,"Clean"),"")
-	#filter.expandCondition(0,gt(Lift.maxWeight,300),and_)
+	filter.addCondition("date==7","")
+	filter.expandCondition(0,"id==5",or_)
+	filter.addCondition(eq(Lift.type,"Clean"),"")
+	filter.expandCondition(0,gt(Lift.maxWeight,300),and_)
 	
 	while 1:
 		#print "Current Filter: %s"%filter
 		for num in options.iterkeys():
 			print "%s: %s"%(num,str(options[num][0]))
-		options[int(raw_input("->"))][1]()
+		options[optionValidate("->",range(4))][1]()
 	''' thing in session.query(Lift).filter(and_(Lift.type=="Squat",Lift.maxReps==1)):
 		print thing'''

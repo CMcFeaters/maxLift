@@ -2,4 +2,6 @@
 X_make all entries stored in lower case
 X_add some data verification 
 X_support multiple paths onboth machines
-_delete a search parameter
+X_delete a search parameter
+_add a display ability for each parameter in the filter
+_create a general python file i can import with the validate functions for future use
