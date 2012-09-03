@@ -8,7 +8,8 @@ from Class_Filter import Filter
 import sys, string
 from operator import ne,eq,lt,le,ge,gt
 
-current_module=sys.modules[__name__] #this is our current module, we're going to use this to print what the fuck we can do here
+sys.path.append("C:\\Users\Charles\Projects\Python_files\general_use")
+from validation import digitValidate,optionValidate
 
 #this section chooses the path the database is stored on
 try:#desktop path
@@ -72,20 +73,7 @@ def addRec():
 	session.add(Lift(nType,nMonth,nDay,nYear,nmaxReps,nmaxWeight)) #this is still an outstanding change 
 	session.commit()
 
-def optionValidate(qStr,rng):
-	#gets a raw input, verifies it is a digit within the given range
-	ans=""
-	while rng.count(ans)==0:
-		ans=int(raw_input(qStr))
-	return ans
-		
-	
-def digitValidate(qStr,numDig):
-	#gets raw input from qStr, repeats until value has number of digits equal to numDigit and it's an integer
-	ans=""
-	while len(ans)!=numDig or not ans.isdigit():
-		ans=raw_input(qStr)
-	return int(ans)
+
 
 def queryTable():
 	#queries the database with whatever is currently in the filter

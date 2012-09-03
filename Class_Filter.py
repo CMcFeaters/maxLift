@@ -56,5 +56,10 @@ class Filter():
 			if str(self.condition[hideNum+1][1])==and_:
 				self.condition[hideNum][0]==1
 			else: self.condition[hideNum][0]==0	
+	def displayCond(self,condNum):
+		#returns a display string for the requested condition
+		if self.condition[0]=="":
+			#if there is no inter-relationship, just print the ocndition
+			pass
 		
 		
