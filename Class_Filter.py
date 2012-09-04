@@ -1,12 +1,13 @@
 #this file will hold our filter class
 from sqlalchemy import and_,or_
+from operator import eq
 
 class Filter():
 	#filter used to create a search, will be a literal sql string
 	
 	def __init__(self):
 		self.numCond=0
-		self.condition={}	#condition: [and(x==1,y==2),inter_relationship with existing filter i.e. or_,and_,blank]
+		self.condition={}	#condition: [instance of condition class , inter_relationship with existing filter (i.e. or_,and_,blank)]
 		self.filter=""									#the statement will be the literal sql statement that gets queried
 		self.filterStr=""
 	
@@ -19,16 +20,15 @@ class Filter():
 		
 	def expandCondition(self,numCond,newCond,intra_rel):
 		#expands an existing conditional statement to include other statements, the conditional statement is and, or or'd with the newcondition
-		print 'FUCK'
 		self.condition[numCond][0]=intra_rel(self.condition[numCond][0],newCond)
 		
 	def buildFilter(self):
 		#returns a filter made up of the members of the filter instance
 		for key in self.condition.keys():
 			if self.condition[key][1]!="": #if it has a relationship
-				self.filter=self.condition[key][1](self.filter,self.condition[key][0])
+				self.filter=self.condition[key][1](self.filter,self.condition[key][0].cond)
 			else:
-				self.filter=self.condition[key][0]
+				self.filter=self.condition[key][0].cond
 		return self.filter
 	
 	def rmvCondition(self,rmvNum):
@@ -49,17 +49,27 @@ class Filter():
 		elif self.condition[hideNum][1]!="":
 			#there is an inter-relation, and=1, or=0
 			if str(self.condition[hideNum][1])==and_:
-				self.condition[hideNum][0]==1
-			else: self.condition[hideNum][0]==0
+				self.condition[hideNum][0]=condition(0,0,eq)		#always true
+			else: self.condition[hideNum][0]=condition(0,1,eq)		#always false
 		else:
 			#there is a neighbor with an inter-relation, and=1, or=0
 			if str(self.condition[hideNum+1][1])==and_:
-				self.condition[hideNum][0]==1
-			else: self.condition[hideNum][0]==0	
+				self.condition[hideNum][0]=condition(0,0,eq)		#always true
+			else: self.condition[hideNum][0]=condition(0,1,eq)		#always false
 	def displayCond(self,condNum):
 		#returns a display string for the requested condition
-		if self.condition[0]=="":
+		if self.condition[condNum][1]=="":
 			#if there is no inter-relationship, just print the ocndition
-			pass
+			return str(self.condition[condNum][0])
+		else:
+			#there is an inter-relationship
+			return self.condition[1]+" "+str(self.condition[condNum][0])
+
+	def __repr__(self):
+		#prints out the entire filter
+		filt=""
+		if self.condition!={}:
+			for index in range(self.numCond,-1,-1):
+					filt=filt+" ("+ str(self.condition[index][0])+") "+str(self.condition[index][1])
 		
-		
+		return filt

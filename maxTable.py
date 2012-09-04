@@ -7,17 +7,19 @@ from sqlalchemy.ext.declarative import declarative_base
 from Class_Filter import Filter
 import sys, string
 from operator import ne,eq,lt,le,ge,gt
+from Class_Condition import condition
 
-sys.path.append("C:\\Users\Charles\Projects\Python_files\general_use")
+sys.path.append("C:\\Users\Charles\Dropbox\Programming\py\general_use")
 from validation import digitValidate,optionValidate
 
 #this section chooses the path the database is stored on
-try:#desktop path
+'''try:#desktop path
 	path="/Users/Charles/Projects/maxLift/lift.db"
 	if open(path): pass
 except IOError as e:#laptoppath
 	print "not Found"
-	path="/Users/Charles/Magic/Projects/1rm/lift.db"
+	path="/Users/Charles/Magic/Projects/1rm/lift.db"'''
+path ="C:\\Users\Charles\Dropbox\Programming\DataBases\lift.db"
 	
 engine  = create_engine('sqlite:///'+path,echo=True)	#'''create the engine here, we will use sqlite and keep it in file'''
 Base=declarative_base()	#this is our declarative base, it maintains a catalog of classes and tables relative to it
@@ -130,8 +132,7 @@ def createFilter():
 	#val: teh value we are evaluating towards
 	val=raw_input("%s %s "%(_cat,_op)).lower()										
 	
-	#add a method to evaluate if the new filter is legal
-	return op(cat,val)	#return the filter as a triple in the format of cat,op,val	
+	return condition(cat,val,op)	
 
 def addFilterP():
 	#this function displays all the parameters that can be added to filters
@@ -188,13 +189,13 @@ if __name__ == "__main__":
 	#search portion, display current search parameters, allow addition of and/or parameters and order parameters
 	
 	options={0:("Add a Record",addRec),1:("Edit Search Parameters",searchEdit),2:("Execute the Search",queryTable),3:("Exit Program",exit)}
-	filter.addCondition("date==7","")
-	filter.expandCondition(0,"id==5",or_)
-	filter.addCondition(eq(Lift.type,"Clean"),"")
-	filter.expandCondition(0,gt(Lift.maxWeight,300),and_)
+	#filter.addCondition("date==7","")
+	#filter.expandCondition(0,"id==5",or_)
+	#filter.addCondition(eq(Lift.type,"Clean"),"")
+	#filter.expandCondition(0,gt(Lift.maxWeight,300),and_)
 	
 	while 1:
-		#print "Current Filter: %s"%filter
+		print "Current Filter: %s"%filter
 		for num in options.iterkeys():
 			print "%s: %s"%(num,str(options[num][0]))
 		options[optionValidate("->",range(4))][1]()

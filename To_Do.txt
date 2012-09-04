@@ -4,4 +4,7 @@ X_add some data verification
 X_support multiple paths onboth machines
 X_delete a search parameter
 _add a display ability for each parameter in the filter
+	X_create new condition class
+	_implement new class
+	_DEBUG NEWLY IMPLEMENTED CLASS, CAUSES CRASH WHEN EXPANDING A PARAMETER
 X_create a general python file i can import with the validate functions for future use
