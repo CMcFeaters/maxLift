@@ -20,7 +20,12 @@ class Filter():
 		
 	def expandCondition(self,numCond,newCond,intra_rel):
 		#expands an existing conditional statement to include other statements, the conditional statement is and, or or'd with the newcondition
-		self.condition[numCond][0]=intra_rel(self.condition[numCond][0],newCond)
+		print intra_rel
+		print newCond
+		print self.condition[numCond][0]
+		print intra_rel(self.condition[numCond][0].cond,newCond.cond)
+		self.condition[numCond][0]=intra_rel(self.condition[numCond][0].cond,newCond.cond)
+		print "Expanded"
 		
 	def buildFilter(self):
 		#returns a filter made up of the members of the filter instance

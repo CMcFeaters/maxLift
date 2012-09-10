@@ -97,7 +97,7 @@ def addParam(cond):
 	#adds a new parameter to our filter
 	andor={0:and_,1:or_}
 	print "0) AND\n1) OR"
-	filter.addCondition(cond,andor[int(raw_input("->"))])
+	filter.addCondition(cond,andor[optionValidate("->",range(2))])
 	
 def expandParam(cond):
 	#allows the user to choose a condition to expand
@@ -106,7 +106,7 @@ def expandParam(cond):
 	choice=int(raw_input("->"))
 	andor={0:and_,1:or_}	#what type of expansion
 	print "0) AND\n1) OR"
-	filter.expandCondition(choice,cond,andor[int(raw_input("->"))])
+	filter.expandCondition(choice,cond,andor[optionValidate("->",range(2))])
 	
 def createFilter():
 	#this function displays all the parameters that can be added to filters
@@ -121,13 +121,13 @@ def createFilter():
 	for key in Lift.memberDict.keys():		
 		print "%s) %s"%(key,Lift.memberDict[key][0])
 	#user input for the category, selects the key for memberdict from the items in memTemp
-	(_cat,cat)=Lift.memberDict[int(raw_input("Choose filter category"))]
+	(_cat,cat)=Lift.memberDict[optionValidate("Choose filter category",range(key+1))]
 	
 	#op: The operator we use in our filtering eg: ==, >
 	for key in opDict.keys():		
 		print "%s) %s"%(key,opDict[key][0])
 	#user input for the category, selects the key for opDict from the items in opTemp
-	(_op,op)=opDict[int(raw_input("Choose filter category"))]
+	(_op,op)=opDict[optionValidate("Choose filter category",range(key+1))]
 	
 	#val: teh value we are evaluating towards
 	val=raw_input("%s %s "%(_cat,_op)).lower()										
@@ -144,7 +144,7 @@ def addFilterP():
 		#determine if it expands an existing option or creates a new one
 		choice={0:expandParam,1:addParam}
 		print "0) Expand Existing Parameter \n1) Add New Parameter"
-		choice[int(raw_input("->"))](newCond)
+		choice[optionValidate("->",range(2))](newCond)
 		
 
 def rmvFilterP():
@@ -193,7 +193,8 @@ if __name__ == "__main__":
 	#filter.expandCondition(0,"id==5",or_)
 	#filter.addCondition(eq(Lift.type,"Clean"),"")
 	#filter.expandCondition(0,gt(Lift.maxWeight,300),and_)
-	
+	filter.addCondition(condition(Lift.type,"clean",eq),"")
+	filter.expandCondition(0,condition(Lift.type,"squat",eq),or_)
 	while 1:
 		print "Current Filter: %s"%filter
 		for num in options.iterkeys():
