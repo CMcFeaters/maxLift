@@ -1,39 +1,42 @@
 #this file will hold our filter class
 from sqlalchemy import and_,or_
 from operator import eq
-
+from Class_Condition import condition
 class Filter():
 	#filter used to create a search, will be a literal sql string
 	
 	def __init__(self):
 		self.numCond=0
-		self.condition={}	#condition: [instance of condition class , inter_relationship with existing filter (i.e. or_,and_,blank)]
+		self.condition={}	#condition: [instance of condition class , inter_relationship with existing filter (i.e. or_,and_,blank), intra status 1:exist 0: none]
 		self.filter=""									#the statement will be the literal sql statement that gets queried
 		self.filterStr=""
 	
-	def addCondition(self,newConditional,inter_rel):
+	def addCondition(self,newConditional,inter_rel,intra):
 		#adds another level to the statement, there is at least 1 condition already in the statement
 		if self.condition!={}:
 			self.numCond+=1
-		self.condition[self.numCond]=[newConditional,inter_rel]
+		self.condition[self.numCond]=[newConditional,inter_rel,intra]
 		#MUST BE RE-WRITTEN
 		
 	def expandCondition(self,numCond,newCond,intra_rel):
 		#expands an existing conditional statement to include other statements, the conditional statement is and, or or'd with the newcondition
-		print intra_rel
-		print newCond
-		print self.condition[numCond][0]
-		print intra_rel(self.condition[numCond][0].cond,newCond.cond)
+		#print intra_rel
+		#print newCond
+		#print self.condition[numCond][0]
+		#print intra_rel(self.condition[numCond][0].cond,newCond.cond)
 		self.condition[numCond][0]=intra_rel(self.condition[numCond][0].cond,newCond.cond)
-		print "Expanded"
+		self.condition[numCond][2]=1
+		#print "Expanded"
 		
 	def buildFilter(self):
 		#returns a filter made up of the members of the filter instance
 		for key in self.condition.keys():
 			if self.condition[key][1]!="": #if it has a relationship
 				self.filter=self.condition[key][1](self.filter,self.condition[key][0].cond)
-			else:
-				self.filter=self.condition[key][0].cond
+			elif self.condition[key][2]==1:
+				#it's an intra relation condition
+				self.filter=self.condition[key][0]
+			else: self.filter=self.condition[key][0].cond
 		return self.filter
 	
 	def rmvCondition(self,rmvNum):
@@ -53,12 +56,13 @@ class Filter():
 			self.condition={}
 		elif self.condition[hideNum][1]!="":
 			#there is an inter-relation, and=1, or=0
-			if str(self.condition[hideNum][1])==and_:
+			if self.condition[hideNum][1]==and_:
 				self.condition[hideNum][0]=condition(0,0,eq)		#always true
-			else: self.condition[hideNum][0]=condition(0,1,eq)		#always false
+			else: 
+				self.condition[hideNum][0]=condition(0,1,eq)		#always false
 		else:
 			#there is a neighbor with an inter-relation, and=1, or=0
-			if str(self.condition[hideNum+1][1])==and_:
+			if self.condition[hideNum+1][1]==and_:
 				self.condition[hideNum][0]=condition(0,0,eq)		#always true
 			else: self.condition[hideNum][0]=condition(0,1,eq)		#always false
 	def displayCond(self,condNum):

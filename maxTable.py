@@ -97,7 +97,7 @@ def addParam(cond):
 	#adds a new parameter to our filter
 	andor={0:and_,1:or_}
 	print "0) AND\n1) OR"
-	filter.addCondition(cond,andor[optionValidate("->",range(2))])
+	filter.addCondition(cond,andor[optionValidate("->",range(2))],0)
 	
 def expandParam(cond):
 	#allows the user to choose a condition to expand
@@ -156,7 +156,7 @@ def rmvFilterP():
 	print "Pick parameter to remove"
 	for key in filter.condition.keys():
 		print "%s) %s"%(key,filter.condition[key][0])
-	choice=optionValidate("->",range(len(filter.condition.keys())-1))
+	choice=optionValidate("->",range(len(filter.condition.keys())))
 	
 	filter.hideCondition(choice)
 	
@@ -193,8 +193,9 @@ if __name__ == "__main__":
 	#filter.expandCondition(0,"id==5",or_)
 	#filter.addCondition(eq(Lift.type,"Clean"),"")
 	#filter.expandCondition(0,gt(Lift.maxWeight,300),and_)
-	filter.addCondition(condition(Lift.type,"clean",eq),"")
+	filter.addCondition(condition(Lift.type,"clean",eq),"",0)
 	filter.expandCondition(0,condition(Lift.type,"squat",eq),or_)
+	filter.addCondition(condition(Lift.month,"08",eq),and_,0)
 	while 1:
 		print "Current Filter: %s"%filter
 		for num in options.iterkeys():
