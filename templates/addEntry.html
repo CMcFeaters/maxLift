@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Enter A Workout</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  <form action="{{ url_for('add_entry') }}" method=post>
+    <dl>
+      <dt>Type:
+      <dd><input tabindex="1" type=text name=nType>
+      <dt>Month:  
+      <dd><input tabindex="2" type=text name=nMonth>
+	  <dt>Day:
+	  <dd><input tabindex="3" type=text name=nDay>
+	  <dt>Year:
+	  <dd><input tabindex="4" type=text name=nYear>
+	  <dt>Reps:
+	  <dd><input tabindex="5" type=text name=nmaxReps>
+	  <dt>Weight:
+	  <dd><input tabindex="6" type=text name=nmaxWeight>
+      <dd><input tabindex="7" type=submit value=Create>
+	  <br>
+    </dl>
+  </form>
+{% endblock %}

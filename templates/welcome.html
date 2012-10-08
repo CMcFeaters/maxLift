@@ -1,3 +1,7 @@
-<!doctype html>
-<title>Hello from Flask</title>
-TEST
+{% extends "layout.html" %}	
+{% block body %}
+    {% if entry %}
+	   <h1>{{entry}} record added</h1></p>
+	{% endif %}
+	<a href="{{ url_for('add_entry') }}">Enter Workout</a>
+{% endblock %}

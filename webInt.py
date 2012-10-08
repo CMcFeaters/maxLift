@@ -1,8 +1,8 @@
 from __future__ import with_statement
 import sys
-sys.path.append('C:\\Users\Charles\Projects\maxLift')
+sys.path.append('C:\\Users\Charles\Projects\maxLift\pythonFiles')
 
-from maxTable import Lift, addRec
+from maxTable import Lift, addRecW
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
     abort, render_template, flash
@@ -14,15 +14,20 @@ app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS',silent=True)
 
 @app.route('/')
-def welcome():
-	print 'hey'
-	return render_template("welcome.html")
+@app.route('/<entry>')
+def welcome(entry=None):
+	return render_template("welcome.html",entry=entry)
 
-@app.route('/add', methods=['POST'])
+@app.route('/add', methods=['POST','GET'])
 def add_entry():
 	#call our add function
 	#it will take data from teh entry forms
-	pass
+	error=None
+	if request.method=='POST':
+		addRecW(request.form)
+		return redirect(url_for('welcome',entry=request.form['nType']))
+	return render_template('addEntry.html',error=error)
+	
 	
 if __name__=='__main__':
    app.run()
