@@ -2,7 +2,7 @@ from __future__ import with_statement
 import sys
 sys.path.append('C:\\Users\Charles\Projects\maxLift\pythonFiles')
 
-from maxTable import Lift, addRecW
+from maxTable import Lift, addRecW, queryTableW
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
     abort, render_template, flash
@@ -27,6 +27,20 @@ def add_entry():
 		addRecW(request.form)
 		return redirect(url_for('welcome',entry=request.form['nType']))
 	return render_template('addEntry.html',error=error)
+
+@app.route('/view')
+def view_entry():
+	#get entries in a list
+	entries=queryTableW()
+	#send that list in a render template format
+	return render_template('viewEntry.html',entries=entries)
+
+#THIS IS WEHRE YOU RESUME WORK
+@app.route('/build')
+def build_filter():
+	#Build the filter here
+	return render_template('buildFilter.html')
+	
 	
 	
 if __name__=='__main__':

@@ -94,6 +94,14 @@ def queryTable():
 	for thing in session.query(Lift).filter(filter.buildFilter()):
 		print thing
 
+def queryTableW():
+	#queries the database using filter, for web version
+	lifts=session.query(Lift).filter(filter.buildFilter())
+	entries= [dict(type=thing.type, day=thing.day,month=thing.month, year=thing.year, maxReps=thing.maxReps,maxWeight=thing.maxWeight) \
+	for thing in lifts]
+	
+	return entries
+
 		
 def getOrder():
 	#returns a string of which category to order the results by
@@ -195,6 +203,7 @@ def searchEdit():
 			break
 		else: options[choice][1]()
 
+#queryTable()
 '''if __name__ == "__main__":
 	#this is going to be the main loop, 2 layer menu, add or search
 	#add portion add records

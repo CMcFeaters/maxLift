@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+<ul class=entries>
+{% for entry in entries %}
+   <li><h2>{{entry.type}}</h2>{{ entry.month }} / {{entry.day}} / {{entry.year}} <br>{{entry.maxReps}} - {{entry.maxWeight}}
+{% else %}
+   <li><em>Nothing Yet</em>
+   
+{% endfor %}
+
+</ul>
+{% endblock %}
+

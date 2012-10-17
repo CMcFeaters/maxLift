@@ -3,5 +3,7 @@
     {% if entry %}
 	   <h1>{{entry}} record added</h1></p>
 	{% endif %}
-	<a href="{{ url_for('add_entry') }}">Enter Workout</a>
+	<a href="{{ url_for('add_entry') }}">Enter Workout</a> / 
+	<a href="{{ url_for('view_entry') }}">View Workouts</a>/
+	<a href="{{ url_for('build_filter') }}">Build Search Filter</a>
 {% endblock %}
