@@ -4,5 +4,10 @@
 
 <div class=page>
   <h1>Lift Tracker</h1>
+  <div>
+  {%for message in get_flashed_messages()%}
+  		<div class=flash>{{message}}</div>
+  {%endfor%}		
+  </div>
   {% block body %}{% endblock %}
 </div>

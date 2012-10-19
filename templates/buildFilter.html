@@ -1,11 +1,25 @@
 {% extends "layout.html" %}
 {% block body %}
-<select name="fType" form="typeForm">
+Current Filter: {{ wFilter }}<br>
+<form onaction="{{ url_for('build_filter')}}" method='POST'>
+<select tabindex=1 name=fType>
 		<option value="type">Type</option>
 		<option value="date">Date</option>
 		<option value="month">Month</option>
 		<option value="year">Year</option>
 		<option value="maxReps">Max Reps</option>
 		<option value="maxWeight">Max Weight</option>
+</select>
+<select tabindex=2 name=opType>
+		<option value="eq">=</option>
+		<option value="ne">!=</option>
+		<option value="gt">></option>
+		<option value="ge">>=</option>
+		<option value="lt"><</option>
+		<option value="le"><=</option>
+</select>
+<input tabindex=3 type=text name=val>
+<input tabIndex=4 type=submit value=Add>
+</form>
 {% endblock %}
 

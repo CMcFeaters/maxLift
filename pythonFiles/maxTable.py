@@ -25,8 +25,6 @@ engine  = create_engine('sqlite:///'+path,echo=True)	#'''create the engine here,
 Base=declarative_base()	#this is our declarative base, it maintains a catalog of classes and tables relative to it
 Session = sessionmaker(bind=engine)	#declare our session, the session is bound to engine and is the ORM's handle to the database
 
-filter=Filter()
-
 class Lift(Base): #this is the class our database is based around
 	#lift is added to the Base catalog
 	__tablename__='lift'	#give it a name
@@ -40,7 +38,7 @@ class Lift(Base): #this is the class our database is based around
 	maxReps = Column(Integer)
 	maxWeight = Column(Integer)
 	memberDict={0:("id",id),1:("type",type),2:("date",date),3:("month",month),4:("day",day),5:("year",year),6:("maxReps",maxReps),7:("maxWeight",maxWeight)}# a dictionary of all the members
-	
+	memberDictW={'type':type,'date':date,'month':month,'year':year,'maxReps':maxReps,'maxWeight':maxWeight}# a dictionary of all the members, nonumbers
 	def __init__ (self,type,month,day,year,maxReps,maxWeight):	#init case
 		self.type = type
 		self.date = int(str(year)+str(month)+str(day))
@@ -153,6 +151,13 @@ def createFilter():
 	val=raw_input("%s %s "%(_cat,_op)).lower()										
 	
 	return condition(cat,val,op)	
+
+def createFilterW(cat,op,val):
+	#takes in values from the form, converts them into the 3 filter parameters
+	opDict={"ne":ne,"eq":eq,"gt":gt,"lt":lt,'ge':ge,'le':le}
+	_op=opDict[op]
+	_cat=Lift.memberDictW[cat]
+	return condition(_cat,_op,val)
 
 def addFilterP():
 	#this function displays all the parameters that can be added to filters
