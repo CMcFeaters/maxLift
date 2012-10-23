@@ -32,7 +32,7 @@ def add_entry():
 @app.route('/view')
 def view_entry():
 	#get entries in a list
-	entries=queryTableW()
+	entries=queryTableW(filter)
 	#send that list in a render template format
 	return render_template('viewEntry.html',entries=entries)
 
@@ -40,15 +40,12 @@ def view_entry():
 @app.route('/build_filter',methods=['POST','GET'])
 def build_filter():
 	#Build the filter here
-	if request.method=='POST':
-		print '1'
-		print request.form['fType']
-		print request.form['opType']
-		print request.form['val']
-		cond=createFilterW(request.form['fType'],request.form['opType'],request.form['val'])
-		print '2'
-		filter.addCondition(cond,"")
-		print filter
+	#this section needs the options to add more than 1 filter type, i.e. and/or
+	#need options to remove things from filter
+	#then an option to view the filter data
+	if request.method=='POST':	#enter this section if you are sending filter data to this function
+		cond=createFilterW(request.form['fType'],request.form['opType'],request.form['val']) #gather filter data
+		filter.addCondition(cond,"","")#add the new comdition
 	return render_template('buildFilter.html',wFilter=filter)
 '''
 @app.route('/add_to_filter/<filter>', methods=['POST'])

@@ -19,7 +19,10 @@ Current Filter: {{ wFilter }}<br>
 		<option value="le"><=</option>
 </select>
 <input tabindex=3 type=text name=val>
-<input tabIndex=4 type=submit value=Add>
+<input tabindex=4 type=submit value=Add>
+<input type=reset value=Reset>
 </form>
+
+<button type="button" onclick="{{ url_for('view_entry')}}" >View</button>
 {% endblock %}
 

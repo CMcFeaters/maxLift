@@ -16,7 +16,7 @@ class condition():
 		self.l=l
 		self.r=r
 		self.op=op
-		self.ops={ne:"!=",eq:"==",lt:"<",le:"<=",gt:">",ge:">="}[op]
+		self.ops={ne:"!=",eq:"==",lt:"<",le:"<=",gt:">",ge:">="}[op]#string representation
 		self.cond=op(l,r)
 	
 	def __repr__(self):

@@ -92,9 +92,9 @@ def queryTable():
 	for thing in session.query(Lift).filter(filter.buildFilter()):
 		print thing
 
-def queryTableW():
+def queryTableW(filterWeb):
 	#queries the database using filter, for web version
-	lifts=session.query(Lift).filter(filter.buildFilter())
+	lifts=session.query(Lift).filter(filterWeb.buildFilter())
 	entries= [dict(type=thing.type, day=thing.day,month=thing.month, year=thing.year, maxReps=thing.maxReps,maxWeight=thing.maxWeight) \
 	for thing in lifts]
 	
@@ -154,10 +154,14 @@ def createFilter():
 
 def createFilterW(cat,op,val):
 	#takes in values from the form, converts them into the 3 filter parameters
+	print 'A'
 	opDict={"ne":ne,"eq":eq,"gt":gt,"lt":lt,'ge':ge,'le':le}
 	_op=opDict[op]
+	print _op
 	_cat=Lift.memberDictW[cat]
-	return condition(_cat,_op,val)
+	print _cat
+	print val
+	return condition(_cat,val,_op)
 
 def addFilterP():
 	#this function displays all the parameters that can be added to filters
