@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
+<script type="text/javascript" src="{{url_for('static',filename='formCode.js')}}"></script>
 Current Filter: {{ wFilter }}<br>
-<form onaction="{{ url_for('build_filter')}}" method='POST'>
+<form id="Form1" name="Form1" onaction="{{ url_for('build_filter')}}" method='POST'>
 <select tabindex=1 name=fType>
 		<option value="type">Type</option>
 		<option value="date">Date</option>
@@ -18,11 +19,11 @@ Current Filter: {{ wFilter }}<br>
 		<option value="lt"><</option>
 		<option value="le"><=</option>
 </select>
-<input tabindex=3 type=text name=val>
-<input tabindex=4 type=submit value=Add>
-<input type=reset value=Reset>
+<input tabindex=3 type=text name="val" id="val">
+<input type=hidden id="resetFlag" name=mud>
+<button tabindex=4 type=submit>ADD</button>
+<button onclick="greeting()">Reset Filter</button>
 </form>
 
-<button type="button" onclick="{{ url_for('view_entry')}}" >View</button>
 {% endblock %}
 

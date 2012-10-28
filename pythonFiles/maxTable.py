@@ -154,13 +154,13 @@ def createFilter():
 
 def createFilterW(cat,op,val):
 	#takes in values from the form, converts them into the 3 filter parameters
-	print 'A'
+	#print 'A'
 	opDict={"ne":ne,"eq":eq,"gt":gt,"lt":lt,'ge':ge,'le':le}
 	_op=opDict[op]
-	print _op
+	#print _op
 	_cat=Lift.memberDictW[cat]
-	print _cat
-	print val
+	#print _cat
+	#print val
 	return condition(_cat,val,_op)
 
 def addFilterP():

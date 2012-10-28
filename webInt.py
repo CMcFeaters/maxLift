@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS',silent=True)
 filter=Filter()
-
+count=0
 @app.route('/')
 def welcome():
 	#flask.flash("hello!")
@@ -43,9 +43,14 @@ def build_filter():
 	#this section needs the options to add more than 1 filter type, i.e. and/or
 	#need options to remove things from filter
 	#then an option to view the filter data
+	print 'yes'
 	if request.method=='POST':	#enter this section if you are sending filter data to this function
-		cond=createFilterW(request.form['fType'],request.form['opType'],request.form['val']) #gather filter data
-		filter.addCondition(cond,"","")#add the new comdition
+		print 'post'
+		if request.form["mud"]=='1':
+			filter.reset()
+		else:
+			cond=createFilterW(request.form['fType'],request.form['opType'],request.form['val']) #gather filter data
+			filter.addCondition(cond,"","")#add the new comdition
 	return render_template('buildFilter.html',wFilter=filter)
 '''
 @app.route('/add_to_filter/<filter>', methods=['POST'])

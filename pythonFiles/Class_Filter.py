@@ -15,7 +15,7 @@ class Filter():
 		self.condition={}	#condition: [instance of condition class , inter_relationship with existing filter (i.e. or_,and_,blank), intra status 1:exist 0: none]
 		self.filter=""									#the statement will be the literal sql statement that gets queried
 		self.filterStr=""
-		
+	
 	def addCondition(self,newConditional,inter_rel,intra):
 		#adds another level to the statement, there is at least 1 condition already in the statement
 		if self.condition!={}:
