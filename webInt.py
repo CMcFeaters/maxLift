@@ -45,12 +45,15 @@ def build_filter():
 	#then an option to view the filter data
 	print 'yes'
 	if request.method=='POST':	#enter this section if you are sending filter data to this function
-		print 'post'
-		if request.form["mud"]=='1':
+		if request.form["special"]=='reset':
 			filter.reset()
-		else:
+		elif request.form["special"]=='view':
+			return redirect(url_for('view_entry'))
+		elif request.form["special"]=='add':
 			cond=createFilterW(request.form['fType'],request.form['opType'],request.form['val']) #gather filter data
 			filter.addCondition(cond,"","")#add the new comdition
+		else:
+			print 'user error'
 	return render_template('buildFilter.html',wFilter=filter)
 '''
 @app.route('/add_to_filter/<filter>', methods=['POST'])

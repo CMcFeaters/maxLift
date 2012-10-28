@@ -1,12 +1,30 @@
-function greeting()
+function reset_filter()
 {
-	var x=document.getElementById("resetFlag");
-	x.value="1";
-	alert(x.value);
-	/*if(x.value==1){
-	alert('1');
-	}
+	//sets teh specialFlag value to Reset
+	var x=document.getElementById("specialFlag");
+	x.value="reset";
+}
+
+function view_results()
+{
+	//sets special flag to value view
+	var x=document.getElementById("specialFlag");
+	x.value="view";
+}
+
+function add_filter()
+{
+	//sets special flag to add
+	var x=document.getElementById("specialFlag");
+	x.value="add";
+	
+	if (filter!=""){
+		alert(filter);
+		alert(conds);
+		alert("NOOT EMPTY");
+		}
 	else{
-	alert('2');
-	}*/
+		alert("EMPTY!");
+		}
+
 }

@@ -1,6 +1,15 @@
 {% extends "layout.html" %}
 {% block body %}
+<script>var filter="{{ wFilter }}";
+		var conds=new Array();
+		var i=0;
+		for (var thing in filter.condition){
+			alert(thing);
+			conds[i]=thing;
+			i++;
+		}</script>
 <script type="text/javascript" src="{{url_for('static',filename='formCode.js')}}"></script>
+
 Current Filter: {{ wFilter }}<br>
 <form id="Form1" name="Form1" onaction="{{ url_for('build_filter')}}" method='POST'>
 <select tabindex=1 name=fType>
@@ -20,9 +29,10 @@ Current Filter: {{ wFilter }}<br>
 		<option value="le"><=</option>
 </select>
 <input tabindex=3 type=text name="val" id="val">
-<input type=hidden id="resetFlag" name=mud>
-<button tabindex=4 type=submit>ADD</button>
-<button onclick="greeting()">Reset Filter</button>
+<input type=hidden id="specialFlag" name=special value="standard">
+<button onclick="add_filter()">ADD</button>
+<button onclick="reset_filter()">Reset Filter</button>
+<button onclick="view_results()">View</button>
 </form>
 
 {% endblock %}
