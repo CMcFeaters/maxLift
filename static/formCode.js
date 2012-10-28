@@ -17,6 +17,7 @@ function add_filter()
 	//sets special flag to add
 	var x=document.getElementById("specialFlag");
 	x.value="add";
+	alert(temp);
 	
 	if (filter!=""){
 		alert(filter);

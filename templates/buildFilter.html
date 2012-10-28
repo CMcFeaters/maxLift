@@ -1,18 +1,32 @@
 {% extends "layout.html" %}
 {% block body %}
 <script>var filter="{{ wFilter }}";
-		var conds=new Array();
-		var i=0;
-		for (var thing in filter.condition){
-			alert(thing);
-			conds[i]=thing;
-			i++;
-		}</script>
+		if ("{{ wFilter.condition}}" !="{}"){
+				x=document.getElementById("Form1").name;
+			    //var andor=document.getElementById('fType');
+				var andor=document.createElement("select");
+				andor.name="andorP";
+				andor.id="andorP";
+				
+				opA=document.createElement('option');
+				opA.value="opAnd";
+				opA.innerHTML="AND";
+				andor.appendChild(opA);
+				
+				opO=document.createElement('option');
+				opO.value="opOr";
+				opO.innerHTML="OR";
+				andor.appendChild(opO);
+				alert(x);
+				document.getElementById("Form1").appendChild(andor);
+				
+		}
+</script>
 <script type="text/javascript" src="{{url_for('static',filename='formCode.js')}}"></script>
 
 Current Filter: {{ wFilter }}<br>
-<form id="Form1" name="Form1" onaction="{{ url_for('build_filter')}}" method='POST'>
-<select tabindex=1 name=fType>
+<form id=Form1 onaction="{{ url_for('build_filter')}}" method='POST'>
+<select tabindex=1 name=fType >
 		<option value="type">Type</option>
 		<option value="date">Date</option>
 		<option value="month">Month</option>
