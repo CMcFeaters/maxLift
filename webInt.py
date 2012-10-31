@@ -43,16 +43,32 @@ def build_filter():
 	#this section needs the options to add more than 1 filter type, i.e. and/or
 	#need options to remove things from filter
 	#then an option to view the filter data
-	print 'yes'
+	inter=""
+	intra=""
 	if request.method=='POST':	#enter this section if you are sending filter data to this function
-		if request.form["special"]=='reset':
+		if request.form["navFlag"]=='reset':
+			#run the reset function
 			filter.reset()
-		elif request.form["special"]=='view':
+		elif request.form["navFlag"]=='view':
+			#execute filter and view the results
 			return redirect(url_for('view_entry'))
-		elif request.form["special"]=='add':
+		elif request.form["navFlag"]=='add':
+			#ADD
+			#create the condition
 			cond=createFilterW(request.form['fType'],request.form['opType'],request.form['val']) #gather filter data
-			filter.addCondition(cond,"","")#add the new comdition
+			#this if statement needs to check if we are adding an inter-relation or an intra-relation
+			if request.form["addType"]=='expand':
+				print "1"
+				intra=request.form["andorP"]
+				print "2"
+				print request.form["exCondNum"]
+				filter.expandCondition(int(request.form["exCondNum"]),cond,intra)
+			elif filter.condition!={} and filter.numCond>0:
+				intra=request.form["andor"]
+			else:#we are making our first filter param
+				filter.addCondition(cond,"","")#add the new condition
 		else:
+			#this runs if somehow we got here, posted and managed not to hit one of the buttons
 			print 'user error'
 	return render_template('buildFilter.html',wFilter=filter)
 '''

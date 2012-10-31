@@ -18,6 +18,7 @@ class Filter():
 	
 	def addCondition(self,newConditional,inter_rel,intra):
 		#adds another level to the statement, there is at least 1 condition already in the statement
+		andorDict={"and_":and_,"or_":or_,"":""}
 		if self.condition!={}:
 			self.numCond+=1
 		self.condition[self.numCond]=[newConditional,inter_rel,intra]
@@ -25,11 +26,8 @@ class Filter():
 		
 	def expandCondition(self,numCond,newCond,intra_rel):
 		#expands an existing conditional statement to include other statements, the conditional statement is and, or or'd with the newcondition
-		#print intra_rel
-		#print newCond
-		#print self.condition[numCond][0]
-		#print intra_rel(self.condition[numCond][0].cond,newCond.cond)
-		self.condition[numCond][0]=intra_rel(self.condition[numCond][0].cond,newCond.cond)
+		andorDict={"and_":and_,"or_":or_,"":""}
+		self.condition[numCond][0]=andorDict[intra_rel](self.condition[numCond][0].cond,newCond.cond)
 		self.condition[numCond][2]=1
 		#print "Expanded"
 		

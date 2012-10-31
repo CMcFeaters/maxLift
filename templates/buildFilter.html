@@ -1,31 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
 <script>var filter="{{ wFilter }}";
-		if ("{{ wFilter.condition}}" !="{}"){
-				x=document.getElementById("Form1").name;
-			    //var andor=document.getElementById('fType');
-				var andor=document.createElement("select");
-				andor.name="andorP";
-				andor.id="andorP";
-				
-				opA=document.createElement('option');
-				opA.value="opAnd";
-				opA.innerHTML="AND";
-				andor.appendChild(opA);
-				
-				opO=document.createElement('option');
-				opO.value="opOr";
-				opO.innerHTML="OR";
-				andor.appendChild(opO);
-				alert(x);
-				document.getElementById("Form1").appendChild(andor);
-				
-		}
+var numCond="{{wFilter.numCond}}";
+var conds="{{wFilter.condition}}";
 </script>
 <script type="text/javascript" src="{{url_for('static',filename='formCode.js')}}"></script>
 
-Current Filter: {{ wFilter }}<br>
-<form id=Form1 onaction="{{ url_for('build_filter')}}" method='POST'>
+
+<form id="Form1" onaction="{{ url_for('build_filter')}}" method='POST'>
+<div id="andorHold">Current Filter: {{ wFilter }}</div><br>
 <select tabindex=1 name=fType >
 		<option value="type">Type</option>
 		<option value="date">Date</option>
@@ -43,11 +26,13 @@ Current Filter: {{ wFilter }}<br>
 		<option value="le"><=</option>
 </select>
 <input tabindex=3 type=text name="val" id="val">
-<input type=hidden id="specialFlag" name=special value="standard">
+<input type=hidden id="navFlag" name=navFlag value="standard">
+<input type=hidden id="exCondNum" name=exCondNum value=0>
 <button onclick="add_filter()">ADD</button>
 <button onclick="reset_filter()">Reset Filter</button>
+<input type=hidden id="addType" name=addType value="none">
 <button onclick="view_results()">View</button>
 </form>
-
+<script>andor();</script>
 {% endblock %}
 
