@@ -12,6 +12,8 @@ from contextlib import closing
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS',silent=True)
+app.debug=True
+
 filter=Filter()
 count=0
 @app.route('/')

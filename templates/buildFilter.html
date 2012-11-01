@@ -1,8 +1,11 @@
 {% extends "layout.html" %}
 {% block body %}
-<script>var filter="{{ wFilter }}";
-var numCond="{{wFilter.numCond}}";
-var conds="{{wFilter.condition}}";
+<script>
+//var filter= {{ wFilter }}
+var numCond={{ wFilter.numCond }};
+var conds=new Array();
+conds={{ wFilter.condArray() }};
+alert(conds);
 </script>
 <script type="text/javascript" src="{{url_for('static',filename='formCode.js')}}"></script>
 

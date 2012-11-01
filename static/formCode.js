@@ -23,7 +23,7 @@ function add_filter()
 function andor()
 {
 
-if (conds !="{}")
+if (conds !="")
 	{
 		if (numCond==0)
 		{
