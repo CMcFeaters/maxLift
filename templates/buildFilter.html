@@ -1,11 +1,20 @@
 {% extends "layout.html" %}
 {% block body %}
 <script>
-//var filter= {{ wFilter }}
-var numCond={{ wFilter.numCond }};
-var conds=new Array();
-conds={{ wFilter.condArray() }};
-alert(conds);
+var numCond={{ numCond }};
+var condArr=new Array();
+var i=0;
+for (thing in {{tempArray}})
+//we should be doing all of this work server side
+//why have python if you don't do the work there?
+//we should return an object that has all the properties to
+//create the drop downs we need
+//have javascript just do the work of creating the menus
+{
+	//condArr[i]=thing;
+	i=i+1;
+}
+alert(i);
 </script>
 <script type="text/javascript" src="{{url_for('static',filename='formCode.js')}}"></script>
 

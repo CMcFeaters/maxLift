@@ -16,13 +16,13 @@ class Filter():
 		self.filter=""									#the statement will be the literal sql statement that gets queried
 		self.filterStr=""
 		
-	def condArray(self):
+	def getConds(self):
 		#returns an array of just the conditions
 		arr=[]
 		if self.condition!={}:
 			for x in range(0,self.numCond+1):
-				arr.append(self.condition[x][0])
-				print self.condition[x][0]
+				arr.append(str(self.condition[x][0]))
+		print arr
 		return arr
 		
 	def addCondition(self,newConditional,inter_rel,intra):
