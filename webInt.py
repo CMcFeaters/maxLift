@@ -74,6 +74,7 @@ def build_filter():
 			#this runs if somehow we got here, posted and managed not to hit one of the buttons
 			print 'user error'
 	tempArray=filter.getConds()
+	print tempArray
 	return render_template('buildFilter.html',wFilter=filter, numCond=filter.numCond,tempArray=tempArray )
 '''
 @app.route('/add_to_filter/<filter>', methods=['POST'])

@@ -23,36 +23,34 @@ function add_filter()
 function andor()
 {
 
-if (conds !="")
+	if (numCond==0)
 	{
-		if (numCond==0)
-		{
-			//set our the filter addition type and condNum to expand the 0th filter param
-			document.getElementById('addType').value="expand";
-			document.getElementById('exCondNum').value=0;
-			//add the andor element to the only place it applies
-			x=document.getElementById('andorHold');
+		//set our the filter addition type and condNum to expand the 0th filter param
+		document.getElementById('addType').value="expand";
+		document.getElementById('exCondNum').value=0;
+		//add the andor element to the only place it applies
+		x=document.getElementById('andorHold');
 
-			andor=document.createElement("select");
-			andor.name="andorP";
-			andor.id="andorP";
-			
-			opA=document.createElement('option');
-			opA.value="and_";
-			opA.innerHTML="AND";
-			andor.appendChild(opA);
-			
-			opO=document.createElement('option');
-			opO.value="or_";
-			opO.innerHTML="OR";
-			andor.appendChild(opO);
-			//append it
-			x.appendChild(andor);
-		}
-		else
-		{
-			
-		}
+		andor=document.createElement("select");
+		andor.name="andorP";
+		andor.id="andorP";
+		
+		opA=document.createElement('option');
+		opA.value="and_";
+		opA.innerHTML="AND";
+		andor.appendChild(opA);
+		
+		opO=document.createElement('option');
+		opO.value="or_";
+		opO.innerHTML="OR";
+		andor.appendChild(opO);
+		//append it
+		x.appendChild(andor);
 	}
-			
+	else
+	{
+		
+	}
 }
+			
+

@@ -5,13 +5,13 @@ class Filter():
 	#filter used to create a search, will be a literal sql string
 	
 	def __init__(self):
-		self.numCond=0
+		self.numCond=-1
 		self.condition={}	#condition: [instance of condition class , inter_relationship with existing filter (i.e. or_,and_,blank), intra status 1:exist 0: none]
 		self.filter=""									#the statement will be the literal sql statement that gets queried
 		self.filterStr=""
 	def reset(self):
 		#resets the filter
-		self.numCond=0
+		self.numCond=-1
 		self.condition={}	#condition: [instance of condition class , inter_relationship with existing filter (i.e. or_,and_,blank), intra status 1:exist 0: none]
 		self.filter=""									#the statement will be the literal sql statement that gets queried
 		self.filterStr=""
@@ -22,18 +22,19 @@ class Filter():
 		if self.condition!={}:
 			for x in range(0,self.numCond+1):
 				arr.append(str(self.condition[x][0]))
-		print arr
+		#print arr
 		return arr
 		
 	def addCondition(self,newConditional,inter_rel,intra):
 		#adds another level to the statement, there is at least 1 condition already in the statement
 		andorDict={"and_":and_,"or_":or_,"":""}
-		if self.condition!={}:
-			self.numCond+=1
+		self.numCond+=1
 		self.condition[self.numCond]=[newConditional,inter_rel,intra]
 		#MUST BE RE-WRITTEN
 		
 	def expandCondition(self,numCond,newCond,intra_rel):
+		#this needs to be reworked so that we don't combine the two conditions
+		#until we build the filter
 		#expands an existing conditional statement to include other statements, the conditional statement is and, or or'd with the newcondition
 		andorDict={"and_":and_,"or_":or_,"":""}
 		self.condition[numCond][0]=andorDict[intra_rel](self.condition[numCond][0].cond,newCond.cond)
@@ -63,7 +64,7 @@ class Filter():
 		#check if condition is the only 1
 		#check if the condition inter-relates with anything
 		#check if the condition is related by it's neighbor
-		if self.numCond==0 and self.condition!={}:
+		if self.numCond==0:
 			#it's the only 1
 			self.condition={}
 		elif self.condition[hideNum][1]!="":
