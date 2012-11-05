@@ -6,7 +6,13 @@ class Filter():
 	
 	def __init__(self):
 		self.numCond=-1
-		self.condition={}	#condition: [instance of condition class , inter_relationship with existing filter (i.e. or_,and_,blank), intra status 1:exist 0: none]
+		self.condition={}	
+			#condition parts
+			#{condition Number:3 part array}
+			#array:
+				#[0]: a condition instance
+				#[1]: the inter-relationship (and_,or_,"")
+				#[2]: the intra condition status (1=intra cond, 0=no intra cond)
 		self.filter=""									#the statement will be the literal sql statement that gets queried
 		self.filterStr=""
 	def reset(self):
@@ -21,15 +27,15 @@ class Filter():
 		arr=[]
 		if self.condition!={}:
 			for x in range(0,self.numCond+1):
-				arr.append(str(self.condition[x][0]))
+				arr.append(self.condition[x][0])
 		#print arr
 		return arr
 		
-	def addCondition(self,newConditional,inter_rel,intra):
+	def addCondition(self,newConditional,inter_rel):
 		#adds another level to the statement, there is at least 1 condition already in the statement
 		andorDict={"and_":and_,"or_":or_,"":""}
 		self.numCond+=1
-		self.condition[self.numCond]=[newConditional,inter_rel,intra]
+		self.condition[self.numCond]=[newConditional,andorDict[inter_rel],0]
 		#MUST BE RE-WRITTEN
 		
 	def expandCondition(self,numCond,newCond,intra_rel):

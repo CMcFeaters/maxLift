@@ -56,26 +56,26 @@ def build_filter():
 			#execute filter and view the results
 			return redirect(url_for('view_entry'))
 		elif request.form["navFlag"]=='add':
-			#ADD
+			#ADD#start here.  need to add ability to handle more than 2 filter options
 			#create the condition
 			cond=createFilterW(request.form['fType'],request.form['opType'],request.form['val']) #gather filter data
 			#this if statement needs to check if we are adding an inter-relation or an intra-relation
-			if request.form["addType"]=='expand':
-				print "1"
+			if request.form["addType"]=='expand':#going to do an expand
+				print 'expand'
 				intra=request.form["andorP"]
-				print "2"
-				print request.form["exCondNum"]
 				filter.expandCondition(int(request.form["exCondNum"]),cond,intra)
-			elif filter.condition!={} and filter.numCond>0:
-				intra=request.form["andor"]
+			elif request.form["addType"]=='add':#going to do a standard add
+				print 'add'
+				filter.addCondition(cond,request.form['andorP'])
 			else:#we are making our first filter param
-				filter.addCondition(cond,"","")#add the new condition
+				print 'first'
+				filter.addCondition(cond,"")#add the new condition
+
 		else:
 			#this runs if somehow we got here, posted and managed not to hit one of the buttons
 			print 'user error'
-	tempArray=filter.getConds()
-	print tempArray
-	return render_template('buildFilter.html',wFilter=filter, numCond=filter.numCond,tempArray=tempArray )
+	
+	return render_template('buildFilter.html',wFilter=filter, numCond=filter.numCond)
 '''
 @app.route('/add_to_filter/<filter>', methods=['POST'])
 def add_to_filter(filter):

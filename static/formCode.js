@@ -17,19 +17,17 @@ function add_filter()
 	//sets special flag to add
 	var x=document.getElementById("navFlag");
 	x.value="add";
-	alert(temp);
 }
 
 function andor()
 {
-
+	
 	if (numCond==0)
 	{
 		//set our the filter addition type and condNum to expand the 0th filter param
-		document.getElementById('addType').value="expand";
-		document.getElementById('exCondNum').value=0;
+		document.getElementById('addType').value="add";
 		//add the andor element to the only place it applies
-		x=document.getElementById('andorHold');
+		x=document.getElementById('andorDiv');
 
 		andor=document.createElement("select");
 		andor.name="andorP";
@@ -47,9 +45,9 @@ function andor()
 		//append it
 		x.appendChild(andor);
 	}
-	else
+	else if (numCond==-1)
 	{
-		
+		document.getElementByID('addType').value="first";
 	}
 }
 			
