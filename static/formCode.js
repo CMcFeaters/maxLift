@@ -19,10 +19,11 @@ function add_filter()
 	x.value="add";
 }
 
+
 function andor()
 {
 	
-	if (numCond==0)
+	if (numCond>=0)
 	{
 		//set our the filter addition type and condNum to expand the 0th filter param
 		document.getElementById('addType').value="add";

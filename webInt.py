@@ -47,7 +47,6 @@ def build_filter():
 	#then an option to view the filter data
 	inter=""
 	intra=""
-	tempArray=[1,2,3]
 	if request.method=='POST':	#enter this section if you are sending filter data to this function
 		if request.form["navFlag"]=='reset':
 			#run the reset function
@@ -70,22 +69,11 @@ def build_filter():
 			else:#we are making our first filter param
 				print 'first'
 				filter.addCondition(cond,"")#add the new condition
-
 		else:
 			#this runs if somehow we got here, posted and managed not to hit one of the buttons
 			print 'user error'
 	
 	return render_template('buildFilter.html',wFilter=filter, numCond=filter.numCond)
-'''
-@app.route('/add_to_filter/<filter>', methods=['POST'])
-def add_to_filter(filter):
-	#this funciton will add to our filter and then return that value to build_filter
-	print 'filter: %s'%filter
-	if filter==None:
-		return render_template('buildFilter.html')
-	else:
-		return render_template('buildFilter.html',filter=filter)'''
-	
 	
 if __name__=='__main__':
    app.run()
